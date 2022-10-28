@@ -46,10 +46,7 @@
             const form = document.querySelector('#book-form');
             container.insertBefore(div, form);
             //Vanish in 3 Seconds
-            setTimeout(
-                ()=>{
-                    document.querySelector('.alert').remove();
-                }, 3000)
+            setTimeout(() => div.remove(), 3000);
         }
         static clearFields(){
             const fields = document.querySelectorAll('.form-group > input');
@@ -65,6 +62,33 @@
         }
     }
 //  STORE CLASS: Handles storage
+
+class Store{
+    static getBooks(){
+        let books;
+        if(localStorage.getItem('books') === null){
+            books = [];
+        } else {
+            books = JSON.parse(localStorage.getItem('books'));
+        }
+        return books;
+    }
+    static addBook(book){
+        const books = Store.getBooks();
+        books.push(book);
+        localStorage.setItem('books', JSON.stringify(books));
+    }
+    static removeBook(isbn){
+        const books = Store.getBooks();
+        books.forEach((book, index) => {
+            if(books.isbn === isbn){
+                books.splice(index, 1);
+            }
+        });
+        localStorage.setItem('books', JSON.stringify(books));
+    }
+}
+
 //  EVENTS:
 //  Display Book
 document.addEventListener('DOMContentLoaded', ui.displayBooks);
@@ -80,6 +104,7 @@ document.querySelector('#book-form').addEventListener('submit', e => {
     } else {
         const book = new Book(title, author, isbn);
         ui.addBookToList(book);
+        ui.showAlert('Book Added', 'success');
         ui.clearFields();
     }
 })
@@ -87,4 +112,5 @@ document.querySelector('#book-form').addEventListener('submit', e => {
 document.querySelector('#book-list').addEventListener('click', event => {
     //console.log(event.target);
     ui.deleteBook(event.target);
+    ui.showAlert('Book Removed', 'success');
 })
