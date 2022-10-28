@@ -29,6 +29,8 @@
         static showAlert(message, className){
             const div = document.createElement('div');
             div.className = `alert alert-${className}`;
+            //div.textContent = message;
+            //div.append(message);
             div.appendChild(document.createTextNode(message));
             const container = document.querySelector('.container');
             const form = document.querySelector('#book-form');
@@ -46,7 +48,6 @@
             //target.parent.parent.remove();
             if(target.classList.contains('delete')){
                 target.parentElement.parentElement.remove();
-
             }
         }
     }
@@ -84,6 +85,7 @@ document.addEventListener('DOMContentLoaded', ui.displayBooks);
 //  Add Book
 document.querySelector('#book-form').addEventListener('submit', e => {
     e.preventDefault();
+
     //Get Form Values
     const title = document.querySelector('#title').value,
         author = document.querySelector('#author').value,
@@ -104,9 +106,9 @@ document.querySelector('#book-form').addEventListener('submit', e => {
 //  Remove Book
 document.querySelector('#book-list').addEventListener('click', event => {
     //console.log(event.target);
-    ui.deleteBook(event.target);
-
-    Store.removeBook(event.target.parentElement.previousElementSibling.textContent);
-
-    ui.showAlert('Book Removed', 'success');
+    if(event.target.classList.contains('delete')){
+        ui.deleteBook(event.target);
+        Store.removeBook(event.target.parentElement.previousElementSibling.textContent);
+        ui.showAlert('Book Removed', 'success');
+    }
 })
